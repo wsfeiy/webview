@@ -35,11 +35,17 @@ endif()
 # Core static library
 if(WEBVIEW_BUILD_STATIC_LIBRARY)
     # Change .lib file name for MSVC because otherwise it would be the same for shared and static
-    if(MSVC)
-        set(STATIC_LIBRARY_OUTPUT_NAME webview_static)
-    else()
-        set(STATIC_LIBRARY_OUTPUT_NAME webview)
-    endif()
+    # 静态库输出名称设置
+    # ------------ 2025-10-19 修改 ------------
+    # 问题：原逻辑在非 MSVC 平台下，静态库名称与共享库导入库重名（如 Debug 模式均为 webviewd.lib）
+    # 解决：统一所有平台静态库名称为 webview_static，确保与共享库（webview）不冲突
+    set(STATIC_LIBRARY_OUTPUT_NAME webview_static)
+    # ------------ 原代码 ------------
+    #if(MSVC)
+    #    set(STATIC_LIBRARY_OUTPUT_NAME webview_static)
+    #else()
+    #    set(STATIC_LIBRARY_OUTPUT_NAME webview)
+    #endif()
 
     add_library(webview_core_static STATIC)
     add_library(webview::core_static ALIAS webview_core_static)
